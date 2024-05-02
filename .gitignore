@@ -1,0 +1,8 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (C) Eric Herman <eric@freesa.org>
+
+build1/
+build2/
+debug1/
+debug2/
+*~
