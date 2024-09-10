@@ -19,12 +19,16 @@ VERSION := $(shell grep '#define RSB_VERSION "[0-9]*\.[0-9]*\.[0-9]*"' \
 
 .PHONY: version
 version:
-	@echo VERSION: $(VERSION)
+	@echo $(VERSION)
 
 SOURCE_DATE_EPOCH ?= $(shell ./version-to-epoch $(VERSION))
 
 .PHONY:source-date-epoch
 source-date-epoch:
+	@echo $(SOURCE_DATE_EPOCH)
+
+.PHONY:source-date-stamp
+source-date-stamp:
 	date --utc '+%Y-%m-%d_%H-%M-%SZ' -d @$(SOURCE_DATE_EPOCH)
 
 # the -fno-ident compiler option prevents adding unique ids to the binary
