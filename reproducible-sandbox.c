@@ -7,30 +7,26 @@
 #include <stdio.h>
 #include <string.h>
 
+
 #define RSB_VERSION "1.2.3"
 
-FILE *rsb_logfile(void);
+FILE *rsb_logger = NULL;
+
 void rsb_log(FILE *log, const char *file, long line, const char *func,
 	     int errnum, char *fmt, ...);
 
 #define Rsb_log(...) \
-	rsb_log(rsb_logfile(), __FILE__, __LINE__, __func__, errno, __VA_ARGS__)
+	rsb_log(rsb_logger, __FILE__, __LINE__, __func__, errno, __VA_ARGS__)
 
 int main(void)
 {
 	Rsb_log("rsb version: %s", RSB_VERSION);
 
-	// The the __DATE__ and __TIME__ macros make reproducibility harder
+	// The __DATE__ and __TIME__ macros make reproducibility harder
 	Rsb_log("   __DATE__: %s", __DATE__);
 	Rsb_log("   __TIME__: %s", __TIME__);
 
 	return 0;
-}
-
-FILE *rsb_logger = NULL;
-FILE *rsb_logfile(void)
-{
-	return rsb_logger ? rsb_logger : stdout;
 }
 
 void rsb_log(FILE *log, const char *file, long line, const char *func,
@@ -38,6 +34,9 @@ void rsb_log(FILE *log, const char *file, long line, const char *func,
 {
 	va_list ap;
 	va_start(ap, fmt);
+
+	log = log ? log : stderr;
+
 	fprintf(log, "%s +%ld %s(): ", file, line, func);
 	if (errnum) {
 		fprintf(log, "%s: ", strerror(errnum));
