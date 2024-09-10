@@ -42,17 +42,15 @@ CFLAGS_DEBUG := -O0 \
 	-fkeep-static-functions \
 	$(CFLAGS_COMMON)
 
-build1:
-	mkdir -pv build1
+DIRS := build1 build2 debug1 debug2
+$(DIRS):
+	mkdir -pv $@
 
 build1/reproducible-sandbox: reproducible-sandbox.c | build1
 	$(CC) $(CFLAGS_BUILD) $^ -o $@
 
 build1/reproducible-sandbox.out: build1/reproducible-sandbox | build1
 	$< > $@
-
-build2:
-	mkdir -pv build2
 
 build2/reproducible-sandbox: reproducible-sandbox.c | build2
 	sleep 1.5
@@ -75,17 +73,11 @@ check-build1-build2-out: \
 	diff -u $^
 	@echo SUCCESS $@
 
-debug1:
-	mkdir -pv debug1
-
 debug1/reproducible-sandbox: reproducible-sandbox.c | debug1
 	$(CC) $(CFLAGS_DEBUG) $^ -o $@
 
 debug1/reproducible-sandbox.out: debug1/reproducible-sandbox | debug1
 	$< > $@
-
-debug2:
-	mkdir -pv debug2
 
 debug2/reproducible-sandbox: reproducible-sandbox.c | debug2
 	sleep 1.5
