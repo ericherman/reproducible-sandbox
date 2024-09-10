@@ -8,6 +8,10 @@
 #include <string.h>
 
 
+// The location and value of uninitialized static variables in the binary
+// could differ between compilations.
+// Initialize for consistent results.
+static uint32_t rsb_version = 1002003UL;
 #define RSB_VERSION "1.2.3"
 
 FILE *rsb_logger = NULL;
@@ -20,7 +24,8 @@ void rsb_log(FILE *log, const char *file, long line, const char *func,
 
 int main(void)
 {
-	Rsb_log("rsb version: %s", RSB_VERSION);
+	Rsb_log("rsb version: %"PRIu32" (%s)", rsb_version, RSB_VERSION);
+	Rsb_log("   compiler: %s", __VERSION__);
 
 	// The __DATE__ and __TIME__ macros make reproducibility harder
 	Rsb_log("   __DATE__: %s", __DATE__);
