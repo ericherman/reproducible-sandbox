@@ -1,0 +1,49 @@
+#!/bin/bash
+# set -x
+
+VERSION="$1"
+if [ -z "$VERSION" ]; then
+	VERSION="0"
+fi
+
+VER_MAJOR=$(echo "$VERSION" | cut -f1 -d'.')
+if [ -z "$VER_MAJOR" ]; then
+	VER_MAJOR="0"
+fi
+
+VER_MINOR=$(echo "$VERSION" | cut -f2 -d'.')
+if [ -z "$VER_MINOR" ]; then
+	VER_MINOR="0"
+fi
+
+VER_PATCH=$(echo "$VERSION" | cut -f3 -d'.')
+if [ -z "$VER_PATCH" ]; then
+	VER_PATCH="0"
+fi
+
+if [ -n "$VERBOSE" ] && [ "$VERBOSE" -gt 0 ]; then
+	echo "VERSION: $VERSION" >&2
+	echo "VER_MAJOR: $VER_MAJOR" >&2
+	echo "VER_MINOR: $VER_MINOR" >&2
+	echo "VER_PATCH: $VER_PATCH" >&2
+fi
+
+SOURCE_DATE_YEAR=$(echo $(( 1970 + "$VER_MAJOR" )) )
+if [ -n "$VERBOSE" ] && [ "$VERBOSE" -gt 0 ]; then
+	echo "SOURCE_DATE_YEAR: $SOURCE_DATE_YEAR" >&2
+fi
+
+SOURCE_DATE_DATE=$(date --utc --iso-8601=s \
+	-d"$SOURCE_DATE_YEAR-01-01 +$VER_MINOR days")
+if [ -n "$VERBOSE" ] && [ "$VERBOSE" -gt 0 ]; then
+	echo "SOURCE_DATE_DATE: $SOURCE_DATE_DATE" >&2
+fi
+
+SOURCE_DATE_TIME=$(date --utc --iso-8601=s \
+	-d"$SOURCE_DATE_DATE +$VER_PATCH seconds")
+if [ -n "$VERBOSE" ] && [ "$VERBOSE" -gt 0 ]; then
+	echo "SOURCE_DATE_TIME: $SOURCE_DATE_TIME" >&2
+fi
+
+SOURCE_DATE_EPOCH=$(date --utc -d"$SOURCE_DATE_TIME" +'%s')
+echo $SOURCE_DATE_EPOCH

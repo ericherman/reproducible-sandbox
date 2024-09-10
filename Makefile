@@ -16,29 +16,15 @@ SHELL := /bin/bash
 # RSB_VERSION follows semver.org, e.g.: 3.11.1
 VERSION := $(shell grep '#define RSB_VERSION "[0-9]*\.[0-9]*\.[0-9]*"' \
 		reproducible-sandbox.c | cut -d'"' -f2)
-VER_MAJOR := $(shell echo "$(VERSION)" | cut -f1 -d'.')
-VER_MINOR := $(shell echo "$(VERSION)" | cut -f2 -d'.')
-VER_PATCH := $(shell echo "$(VERSION)" | cut -f3 -d'.')
 
+.PHONY: version
 version:
 	@echo VERSION: $(VERSION)
-	@echo VER_MAJOR: $(VER_MAJOR)
-	@echo VER_MINOR: $(VER_MINOR)
-	@echo VER_PATCH: $(VER_PATCH)
 
-SOURCE_DATE_YEAR := $(shell echo $$(( 2000 + $(VER_MAJOR) )))
-SOURCE_DATE_DATE := $(shell date --utc --iso-8601=s \
-	-d'$(SOURCE_DATE_YEAR)-01-01 +$(VER_MINOR) days')
-SOURCE_DATE_TIME := $(shell date --utc --iso-8601=s \
-	-d'$(SOURCE_DATE_DATE) +$(VER_PATCH) seconds')
-SOURCE_DATE_EPOCH ?= $(shell date --utc -d'$(SOURCE_DATE_TIME)' +'%s')
+SOURCE_DATE_EPOCH ?= $(shell ./version-to-epoch $(VERSION))
 
 .PHONY:source-date-epoch
 source-date-epoch:
-	@echo SOURCE_DATE_YEAR:$(SOURCE_DATE_YEAR)
-	@echo SOURCE_DATE_DATE:$(SOURCE_DATE_DATE)
-	@echo SOURCE_DATE_TIME:$(SOURCE_DATE_TIME)
-	@echo SOURCE_DATE_EPOCH:$(SOURCE_DATE_EPOCH)
 	date --utc '+%Y-%m-%d_%H-%M-%SZ' -d @$(SOURCE_DATE_EPOCH)
 
 CC := SOURCE_DATE_EPOCH=$(SOURCE_DATE_EPOCH) gcc
