@@ -29,7 +29,19 @@ source-date-epoch:
 
 .PHONY:source-date-stamp
 source-date-stamp:
-	date --utc '+%Y-%m-%d_%H-%M-%SZ' -d @$(SOURCE_DATE_EPOCH)
+	@date --utc '+%Y-%m-%d_%H-%M-%SZ' -d @$$(cat $<)
+
+ALL_SRC=reproducible-sandbox.c
+
+%/source-date-epoch: | %
+	date --utc '+%s' -d @$(SOURCE_DATE_EPOCH) > $@.tmp
+	touch -d@$(SOURCE_DATE_EPOCH) $(ALL_SRC) $@.tmp
+	mv -v $@.tmp $@
+	ls -l $(ALL_SRC) $@
+
+.PHONY: source-date-timestamp
+source-date-timestamp: build1/source-date-epoch
+
 
 # the -fno-ident compiler option prevents adding unique ids to the binary
 CC := SOURCE_DATE_EPOCH=$(SOURCE_DATE_EPOCH) gcc -fno-ident
@@ -51,13 +63,13 @@ DIRS := build1 build2 debug1 debug2
 $(DIRS):
 	mkdir -pv $@
 
-build1/reproducible-sandbox: reproducible-sandbox.c | build1
+build1/reproducible-sandbox: reproducible-sandbox.c | build1/source-date-epoch
 	$(CC) $(CFLAGS_BUILD) $^ -o $@
 
 build1/reproducible-sandbox.out: build1/reproducible-sandbox
 	$< > $@
 
-build2/reproducible-sandbox: reproducible-sandbox.c | build2
+build2/reproducible-sandbox: reproducible-sandbox.c | build2/source-date-epoch
 	sleep 1.5
 	$(CC) $(CFLAGS_BUILD) $^ -o $@
 
@@ -78,13 +90,13 @@ check-build1-build2-out: \
 	diff -u $^
 	@echo SUCCESS $@
 
-debug1/reproducible-sandbox: reproducible-sandbox.c | debug1
+debug1/reproducible-sandbox: reproducible-sandbox.c | debug1/source-date-epoch
 	$(CC) $(CFLAGS_DEBUG) $^ -o $@
 
 debug1/reproducible-sandbox.out: debug1/reproducible-sandbox
 	$< > $@
 
-debug2/reproducible-sandbox: reproducible-sandbox.c | debug2
+debug2/reproducible-sandbox: reproducible-sandbox.c | debug2/source-date-epoch
 	sleep 1.5
 	$(CC) $(CFLAGS_DEBUG) $^ -o $@
 

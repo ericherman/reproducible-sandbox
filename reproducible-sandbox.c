@@ -31,6 +31,11 @@ int main(void)
 	Rsb_log("   __DATE__: %s", __DATE__);
 	Rsb_log("   __TIME__: %s", __TIME__);
 
+	// The __TIMESTAMP__ macro does not honor SOURCE_DATE_EPOCH,
+	// rather it is the date/time of the last modification of __FILE__
+	// and must be touch(1)ed to be made consistent.
+	Rsb_log("   __TIMESTAMP__: %s", __TIMESTAMP__);
+
 	return 0;
 }
 
