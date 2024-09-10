@@ -46,18 +46,17 @@ source-date-timestamp: build1/source-date-epoch
 # the -fno-ident compiler option prevents adding unique ids to the binary
 CC := SOURCE_DATE_EPOCH=$(SOURCE_DATE_EPOCH) gcc -fno-ident
 
-CFLAGS_NOISY := -Wall -Wextra -Wpedantic -Wcast-qual -Wc++-compat \
-		$(CFLAGS) -pipe
+CFLAGS_NOISY := -Wall -Wextra -Wpedantic -Wcast-qual -Wc++-compat
 
-CFLAGS_COMMON := -g $(CFLAGS_NOISY)
+CFLAGS_COMMON := -g $(CFLAGS_NOISY) $(CFLAGS)
 
-CFLAGS_BUILD := -O2 -DNDEBUG $(CFLAGS_COMMON)
+CFLAGS_BUILD := -O2 -DNDEBUG $(CFLAGS_COMMON) -pipe
 
 CFLAGS_DEBUG := -O0 \
 	-fno-inline-small-functions \
 	-fkeep-inline-functions \
 	-fkeep-static-functions \
-	$(CFLAGS_COMMON)
+	$(CFLAGS_COMMON) --save-temps
 
 DIRS := build1 build2 debug1 debug2
 $(DIRS):
