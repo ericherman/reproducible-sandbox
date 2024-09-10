@@ -27,7 +27,8 @@ SOURCE_DATE_EPOCH ?= $(shell ./version-to-epoch $(VERSION))
 source-date-epoch:
 	date --utc '+%Y-%m-%d_%H-%M-%SZ' -d @$(SOURCE_DATE_EPOCH)
 
-CC := SOURCE_DATE_EPOCH=$(SOURCE_DATE_EPOCH) gcc
+# the -fno-ident compiler option prevents adding unique ids to the binary
+CC := SOURCE_DATE_EPOCH=$(SOURCE_DATE_EPOCH) gcc -fno-ident
 
 CFLAGS_NOISY := -Wall -Wextra -Wpedantic -Wcast-qual -Wc++-compat \
 		$(CFLAGS) -pipe
