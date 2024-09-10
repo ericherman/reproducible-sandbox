@@ -49,14 +49,14 @@ $(DIRS):
 build1/reproducible-sandbox: reproducible-sandbox.c | build1
 	$(CC) $(CFLAGS_BUILD) $^ -o $@
 
-build1/reproducible-sandbox.out: build1/reproducible-sandbox | build1
+build1/reproducible-sandbox.out: build1/reproducible-sandbox
 	$< > $@
 
 build2/reproducible-sandbox: reproducible-sandbox.c | build2
 	sleep 1.5
 	$(CC) $(CFLAGS_BUILD) $^ -o $@
 
-build2/reproducible-sandbox.out: build2/reproducible-sandbox | build2
+build2/reproducible-sandbox.out: build2/reproducible-sandbox
 	$< > $@
 
 .PHONY: check-build1-build2
@@ -76,14 +76,14 @@ check-build1-build2-out: \
 debug1/reproducible-sandbox: reproducible-sandbox.c | debug1
 	$(CC) $(CFLAGS_DEBUG) $^ -o $@
 
-debug1/reproducible-sandbox.out: debug1/reproducible-sandbox | debug1
+debug1/reproducible-sandbox.out: debug1/reproducible-sandbox
 	$< > $@
 
 debug2/reproducible-sandbox: reproducible-sandbox.c | debug2
 	sleep 1.5
 	$(CC) $(CFLAGS_DEBUG) $^ -o $@
 
-debug2/reproducible-sandbox.out: debug2/reproducible-sandbox | debug2
+debug2/reproducible-sandbox.out: debug2/reproducible-sandbox
 	$< > $@
 
 
